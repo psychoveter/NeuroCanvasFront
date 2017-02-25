@@ -1,0 +1,111 @@
+<br/><br/>
+
+	<div class="container">		
+			    
+		<!-- Content zone -->
+			    
+		<div class="breadcrumb">
+			<h4>Choose content</h4>
+		</div>
+		 
+	 	<div class="container">
+		    <div class="row">
+		 		<img id="contentImage" class="image" src="" width="100%" height="100%"/>                            			
+		 	</div>
+	 	
+		 	<div class="row">		        	       
+		        <div class="col-sm-8">Upload progress:
+			         <div class="progress" style="">
+			                	<div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+			         </div>
+		        </div>
+		        <div class="col-sm-4">
+			        <label class="btn btn-primary btn-sm" style="margin-bottom: .0rem">
+					    	Choose file <input type="file" style="display: none;" (change)="contentImageChoosen($event)"/>
+					</label>
+			        <button type="button" class="btn btn-success btn-sm"
+			                        (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+			                    <span class="glyphicon glyphicon-upload"></span> Upload
+			         </button>
+			         <button type="button" class="btn btn-warning btn-sm"
+			                        (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+			                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+			         </button>
+			         <button type="button" class="btn btn-danger btn-sm"
+			                        (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+			                    <span class="glyphicon glyphicon-trash"></span> Remove
+			         </button>
+		         </div>		         
+		 	</div>
+		</div>
+		
+		<br/><br/>
+	
+		<!-- Style zone -->
+	
+		<div class="breadcrumb">
+			<h4>Choose predefined or custom style</h4>
+		</div>
+		
+		<tabset [justified]="true">
+		  <tab heading="Predefined">
+		  	<br/>
+		  	
+		  	<carousel interval="-1" [noWrap]="noWrapSlides" [(activeSlide)]="activeSlideIndex">			  
+			  <slide *ngFor="let slide of slides; let index=index">			  	
+			  	<div class="row justify-content-center">
+			  		<img class="img-thumbnail rounded" style="height: 300px" [src]="slide.image">
+			  	</div>			  				  	 
+				<div class="carousel-caption">
+					<h4>Slide {{index}}</h4>
+					<p>{{slide.text}}</p>
+				</div>			  				  
+			  </slide>			  
+			</carousel>
+						
+		  </tab>
+		  		  
+		  <tab heading="Custom">		  
+		  	<br/>
+		  	
+		  	<div class="row">
+		  		<div class="col">
+		  			<h6>Transfer type: </h6>      
+		  			<div class="btn-group">
+					  <label class="btn btn-primary" [(ngModel)]="customTransferType" btnRadio="Gradient" uncheckable>Gradient</label>
+					  <label class="btn btn-primary" [(ngModel)]="customTransferType" btnRadio="Patched" uncheckable>Patched</label>					  
+					</div>
+		  		</div>
+		  		
+			  	<div class="col">
+	          	  <div class="form-group">
+				    <img id="styleImage" class="img-thumbnail rounded" src="" width="100%" height="100%"/>                            
+				    <label class="btn btn-default">
+				    	Choose file <input type="file" style="display: none;" (change)="styleImageChoosen($event)"/>
+				    </label>
+				  </div>  
+	          	</div>
+		  	</div>		  	
+		  	
+		  </tab>
+		  	  
+		</tabset>
+		
+		<br/><br/>
+		
+		<!-- Processing result zone -->
+		
+		<div class="breadcrumb">
+			<h4>Processing results</h4>
+		</div>
+		
+		<div *ngIf="awaitingResult">
+			processing results...
+		</div>
+		<div *ngIf="!awaitingResult">
+			<button class="btn btn-primary btn-lg btn-block" (click)="process()">Transfer</button>
+		</div>
+		
+	
+	
+</div>
