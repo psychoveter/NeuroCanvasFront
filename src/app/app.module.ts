@@ -13,11 +13,11 @@ import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
-    FileSelectDirective,
+//    FileSelectDirective,     
     CnstrComponent,
     AppComponent
   ],
-  imports: [
+  imports: [    
     BrowserModule,
     FormsModule,
     HttpModule, 
