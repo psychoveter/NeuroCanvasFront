@@ -172,6 +172,8 @@
                 	<div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': styleUploader.progress + '%' }"></div>
                 </div>
             </div>                
+            
+            <br/>
            
            	<div *ngIf="transferStatus">
            		Neural Network is working:
@@ -184,9 +186,22 @@
            			</div>
            		</div>
            		
-           		<div *ngIf="transferStatus.result">
-           			<img [src]="resultTransferUrl"/>           			
+           		<br/>
+           		
+           		<div style="display: flex; 
+							flex-direction: column; 
+							justify-content: center;
+							text-align: center;">
+           		
+	           		<div *ngIf="!transferStatus.result">
+	           			<label>Just a moment and magic will happen</label>	
+	           		</div>
+	           		
+	           		<div *ngIf="transferStatus.result">
+	           			<img class="img-thumbnail" [src]="resultTransferUrl"/>           			
+	           		</div>
            		</div>
+           		
            	</div>
            
 			
