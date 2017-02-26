@@ -1,111 +1,203 @@
 <br/><br/>
 
 	<div class="container">		
-			    
-		<!-- Content zone -->
-			    
-		<div class="breadcrumb">
-			<h4>Choose content</h4>
-		</div>
-		 
-	 	<div class="container">
-		    <div class="row">
-		 		<img id="contentImage" class="image" src="" width="100%" height="100%"/>                            			
-		 	</div>
-	 	
-		 	<div class="row">		        	       
-		        <div class="col-sm-8">Upload progress:
-			         <div class="progress">
-			                	<div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
-			         </div>
-		        </div>
-		        <div class="col-sm-4">
-			        <label class="btn btn-primary btn-sm" style="margin-bottom: .0rem">
-					    	Choose file <input type="file" style="display: none;" (change)="contentImageChoosen($event)"/>
-					</label>
-			        <button type="button" class="btn btn-success btn-sm"
-			                        (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
-			                    <span class="glyphicon glyphicon-upload"></span> Upload
-			         </button>
-			         <button type="button" class="btn btn-warning btn-sm"
-			                        (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
-			                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-			         </button>
-			         <button type="button" class="btn btn-danger btn-sm"
-			                        (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
-			                    <span class="glyphicon glyphicon-trash"></span> Remove
-			         </button>
-		         </div>		         
-		 	</div>
-		</div>
+
+		<!-- ========================================================================================================================================= -->
+		<!-- IDLE zone -->
+		<!-- ========================================================================================================================================= -->		
 		
-		<br/><br/>
-	
-		<!-- Style zone -->
-	
-		<div class="breadcrumb">
-			<h4>Choose predefined or custom style</h4>
-		</div>
-		
-		<tabset [justified]="true">
-		  <tab heading="Predefined">
-		  	<br/>
-		  	
-		  	<carousel interval="-1" [noWrap]="noWrapSlides" [(activeSlide)]="activeSlideIndex">			  
-			  <slide *ngFor="let slide of slides; let index=index">			  	
-			  	<div class="row justify-content-center">
-			  		<img class="img-thumbnail rounded" style="height: 300px" [src]="slide.image">
-			  	</div>			  				  	 
-				<div class="carousel-caption">
-					<h4>Slide {{index}}</h4>
-					<p>{{slide.text}}</p>
-				</div>			  				  
-			  </slide>			  
-			</carousel>
-						
-		  </tab>
-		  		  
-		  <tab heading="Custom">		  
-		  	<br/>
-		  	
-		  	<div class="row">
-		  		<div class="col">
-		  			<h6>Transfer type: </h6>      
-		  			<div class="btn-group">
-					  <label class="btn btn-primary" [(ngModel)]="customTransferType" btnRadio="Gradient" uncheckable>Gradient</label>
-					  <label class="btn btn-primary" [(ngModel)]="customTransferType" btnRadio="Patched" uncheckable>Patched</label>					  
+		<div *ngIf="status == 'IDLE'">
+			
+			<div class="row">
+				<!-- content ---------------------------------------------------------------------------------------------------------------------------->
+				<div class="col container">
+					<div *ngIf="contentDefined" style="min-height: 300px" style="
+						min-height: 300px;						
+						display: flex; 
+						 
+						justify-content: center;">
+						<img 
+							id="contentImage" 
+							class="img-thumbnail rounded" src=""
+							style="max-height: 300px; width: auto;"  />                            				    
 					</div>
-		  		</div>
-		  		
-			  	<div class="col">
-	          	  <div class="form-group">
-				    <img id="styleImage" class="img-thumbnail rounded" src="" width="100%" height="100%"/>                            
-				    <label class="btn btn-primary btn-sm" style="margin-bottom: .0rem">
-				    	Choose file <input type="file" style="display: none;" (change)="styleImageChoosen($event)"/>
-				    </label>
-				  </div>  
-	          	</div>
-		  	</div>		  	
-		  	
-		  </tab>
-		  	  
-		</tabset>
+					
+					<div *ngIf="!contentDefined" style="
+						min-height: 300px;						
+						display: flex; 
+						flex-direction: column; 
+						justify-content: center;
+						border-style: dashed;
+						border-color: #bcc7d8;
+						border-radius: 10px;">
+						
+						<label class="btn btn-primary btn-sm" style="margin-bottom: .0rem; align-self: center">
+					    	Choose content file <input 
+					    		type="file"	
+					    		ng2FileSelect [uploader]="contentUploader"				    	
+					    		style="display: none;" 
+					    		(change)="contentImageChoosen($event)"/>
+						</label>
+					</div>
+				</div>
+				
+				<!-- style ----------------------------------------------------------------------------------------------------------------------------->
+				<div class="col container">
+					<div *ngIf="styleConfProgress == 0 || styleConfProgress == 1 || styleConfProgress == 2" style="
+						min-height: 300px;						
+						display: flex; 
+						flex-direction: column; 
+						justify-content: center;
+						border-style: dashed;
+						border-color: #bcc7d8;
+						border-radius: 10px;">
+					
+						<div *ngIf="styleConfProgress == 0" style="align-self: center">	
+							<label 
+								class="btn btn-primary btn-sm" 
+								style="align-self: center" 
+								(click) = "styleConfProgress01()">Configure style</label>
+						</div>
+						
+							
+						<div *ngIf="styleConfProgress == 1" style="align-self: center">						
+							<div class="btn-group">
+							  <label class="btn btn-primary" [(ngModel)]="styleType" 
+							  	btnRadio="Gallery" (click)="styleConfProgress12();">Gallery</label>
+							  <label class="btn btn-primary" [(ngModel)]="styleType" 
+							  	btnRadio="Custom" (click)="styleConfProgress12();">Custom</label>						  
+							</div>						
+						</div>	
+						
+						<div *ngIf="styleConfProgress == 2" style="align-self: center">							
+							<div *ngIf="styleType == 'Gallery'">
+								<carousel interval="-1" [(activeSlide)]="galleryItem">
+									<slide *ngFor="let gi of galleryItems">
+										<img 
+									    	style="max-height: 300px" 
+									    	[src]="gi">
+									    <div class="carousel-caption">
+									    	<button class="btn btn-primary btn-sm"
+									    		(click)="styleConfProgress23()">Select Style</button>
+									    </div>
+									</slide>																 
+								</carousel>
+								
+							</div>
+							 
+							<div *ngIf="styleType == 'Custom'">
+								<img 
+									id="styleImage" 
+									class="img-thumbnail rounded" src=""
+									style="min-height: 260 px; max-height: 260px; width: auto;"  />
+								
+								<br/>									        															
+								<label class="btn btn-primary btn-sm btn-block" style="margin-bottom: .0rem; align-self: center">
+							    	Open file <input 
+							    		type="file"	
+							    		ng2FileSelect [uploader]="styleUploader"				    	
+							    		style="display: none;" 
+							    		(change)="styleImageChoosen($event)"/>							    																	    		
+								</label>
+								
+								<div *ngIf="styleDefined && styleConfProgress == 2 && styleType == 'Custom'">
+									<button class="btn btn-primary btn-sm btn-block"
+										(click)="styleConfProgress23()">Configure transfer settings</button>
+								</div>
+								
+							</div>
+						</div>						
+					</div>
+				
+					<div *ngIf="styleConfProgress == 3">							
+							<h5>Transfer options:</h5>
+							<h6>Gradient type:</h6>								
+							<div class="btn-group">
+									  <label class="btn btn-primary" [(ngModel)]="customStyleType" 
+									  	btnRadio="Gradient">Gradient</label>
+									  <label class="btn btn-primary" [(ngModel)]="customStyleType" 
+									  	btnRadio="Patched">Patched</label>
+							</div>
+							<h6>Style weight:</h6>
+							<span>slider here</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col">
+					<button 
+						*ngIf="contentDefined"
+						class="btn btn-primary btn-lg btn-block" (click)="resetContent();">Reset content</button>		
+				</div>
+				<div class="col">
+					<button 
+						*ngIf="styleConfProgress != 0"
+						class="btn btn-primary btn-lg btn-block" (click)="resetStyle();">Reset style</button>
+				</div>
+			</div>
 		
-		<br/><br/>
-		
-		<!-- Processing result zone -->
-		
-		<div class="breadcrumb">
-			<h4>Processing results</h4>
+			<br/>
+			
+			<div *ngIf="contentDefined && styleDefined">
+				<button class="btn btn-primary btn-lg btn-block" (click)="startTransfer()">Transfer</button>
+			</div>
+			
 		</div>
 		
-		<div *ngIf="awaitingResult">
-			processing results...
-		</div>
-		<div *ngIf="!awaitingResult">
-			<button class="btn btn-primary btn-lg btn-block" (click)="process()">Transfer</button>
+		<!-- ========================================================================================================================================= -->
+		<!-- TRNASFER zone -->
+		<!-- ========================================================================================================================================= -->
+		
+		<div *ngIf="status == 'TRANSFER'">
+			<div class="breadcrumb">
+				<h4>Processing results</h4>
+			</div>
+			
+			
+            
+            <div>
+                Uploading content file:
+                <div class="progress" style="">
+                	<div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': contentUploader.progress + '%' }"></div>
+                </div>
+            </div>                
+            
+            
+            
+            
+            <div>
+            	Uploading style:
+                <div class="progress" style="">
+                	<div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': styleUploader.progress + '%' }"></div>
+                </div>
+            </div>                
+           
+           	<div *ngIf="transferStatus">
+           		Neural Network is working:
+           		<div class="progress">
+           			<div 
+           				class="progress-bar" 
+           				role="progressbar"
+           				[ngStyle]="{ 'width': transferStatus.current/transferStatus.total + '%' }">
+           				<span class="text-center">{{transferStatus.current}}</span>           				
+           			</div>
+           		</div>
+           		
+           		<div *ngIf="transferStatus.result">
+           			<img [src]="resultTransferUrl"/>           			
+           		</div>
+           	</div>
+           
+			
 		</div>
 		
+		<!-- ========================================================================================================================================= -->
+		<!-- HANDLE zone -->
+		<!-- ========================================================================================================================================= -->
+						
+		<div *ngIf="status == 'HANDLE'">
+			Handle...
+		</div>
 	
-	
-</div>
+</div> <!-- container -->
